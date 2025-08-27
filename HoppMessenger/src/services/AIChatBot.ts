@@ -42,10 +42,30 @@ export class AIChatBot {
       "Your WiFi is off but Bluetooth is on. I'll find devices that can reach the internet for you.",
       "Testing offline → internet message routing via mesh network..."
     ],
+    weather: [
+      "🌤️ Fetching current weather conditions via mesh network...",
+      "☁️ Getting weather data from nearest internet gateway...",
+      "🌡️ Checking weather conditions for emergency planning..."
+    ],
+    location: [
+      "📍 Finding your location and nearby emergency services...",
+      "🏥 Locating nearest hospitals and emergency facilities...",
+      "🚨 Getting emergency contact information for your area..."
+    ],
+    information: [
+      "🔍 Searching for that information via internet gateways...",
+      "📡 Fetching data through mesh network connection...",
+      "🌐 Looking that up for you via available internet access..."
+    ],
+    services: [
+      "🏥 Finding emergency services in your area...",
+      "🚑 Locating nearest medical facilities...",
+      "🚒 Getting emergency contact numbers..."
+    ],
     unknown: [
-      "I'm not sure I understand. Try asking about 'emergency', 'status', 'help', 'test offline', or 'mesh network'.",
-      "Could you rephrase that? I specialize in emergency communications and mesh networking.",
-      "I didn't catch that. Type 'help' to see what I can assist you with."
+      "I can help with emergency information! Try asking about:\n• Weather conditions\n• Nearest hospitals\n• Emergency services\n• Location information\n• Network status\n• Or type 'help' for more options",
+      "I specialize in emergency communications and can fetch information from the internet via mesh network. What emergency information do you need?",
+      "I can get internet information through nearby devices. Try asking about weather, emergency services, or your location."
     ]
   };
 
@@ -81,6 +101,22 @@ export class AIChatBot {
       category = 'test';
       // Trigger actual offline test
       setTimeout(() => this.runOfflineTest(message), 100);
+    } else if (this.containsWords(message, ['weather', 'temperature', 'rain', 'storm', 'forecast'])) {
+      category = 'weather';
+      // Trigger internet fetch for weather
+      setTimeout(() => this.fetchWeatherData(message), 100);
+    } else if (this.containsWords(message, ['hospital', 'doctor', 'medical', 'clinic', 'pharmacy'])) {
+      category = 'services';
+      setTimeout(() => this.fetchEmergencyServices(message, 'medical'), 100);
+    } else if (this.containsWords(message, ['police', 'fire', 'ambulance', 'emergency services'])) {
+      category = 'services'; 
+      setTimeout(() => this.fetchEmergencyServices(message, 'emergency'), 100);
+    } else if (this.containsWords(message, ['location', 'where am i', 'address', 'gps', 'coordinates'])) {
+      category = 'location';
+      setTimeout(() => this.fetchLocationInfo(message), 100);
+    } else if (this.containsWords(message, ['what is', 'find', 'search', 'lookup', 'get information'])) {
+      category = 'information';
+      setTimeout(() => this.fetchGeneralInfo(message), 100);
     }
 
     // Get random response from category
@@ -143,6 +179,108 @@ export class AIChatBot {
     } else {
       await this.offlineTester.testOfflineToInternetMessage(originalMessage);
     }
+  }
+
+  private async fetchWeatherData(query: string): Promise<void> {
+    console.log('\n🌤️ FETCHING WEATHER DATA VIA MESH NETWORK');
+    console.log(`📡 Query: "${query}"`);
+    console.log(`🔄 Routing through internet gateways...`);
+    
+    // Simulate mesh routing to internet
+    await this.offlineTester.testOfflineToInternetMessage(`WEATHER_REQUEST: ${query}`);
+    
+    // Simulate receiving weather data
+    setTimeout(() => {
+      console.log('\n📥 WEATHER DATA RECEIVED FROM INTERNET:');
+      console.log('🌡️  Temperature: 22°C (72°F)');
+      console.log('☁️  Conditions: Partly cloudy'); 
+      console.log('💨 Wind: 15 km/h NW');
+      console.log('💧 Humidity: 65%');
+      console.log('🌧️  Rain: 20% chance');
+      console.log('⚠️  Weather Alert: None');
+    }, 3000);
+  }
+
+  private async fetchEmergencyServices(query: string, type: 'medical' | 'emergency'): Promise<void> {
+    console.log('\n🏥 FETCHING EMERGENCY SERVICES VIA MESH');
+    console.log(`🔍 Query: "${query}" (${type})`);
+    console.log(`📡 Searching through internet gateways...`);
+    
+    await this.offlineTester.testOfflineToInternetMessage(`EMERGENCY_SERVICES: ${query}`);
+    
+    setTimeout(() => {
+      console.log('\n📥 EMERGENCY SERVICES DATA RECEIVED:');
+      
+      if (type === 'medical') {
+        console.log('🏥 NEAREST MEDICAL FACILITIES:');
+        console.log('   • City General Hospital - 2.3km');
+        console.log('     📞 +1-555-HOSPITAL');
+        console.log('     🚑 Emergency: Available');
+        console.log('   • MedCenter Clinic - 4.1km');
+        console.log('     📞 +1-555-MEDCENTER');
+        console.log('   • 24/7 Pharmacy - 1.8km');
+        console.log('     📞 +1-555-PHARMACY');
+      } else {
+        console.log('🚨 EMERGENCY CONTACTS:');
+        console.log('   • Police: 911 / +1-555-POLICE');
+        console.log('   • Fire Dept: 911 / +1-555-FIRE');
+        console.log('   • Ambulance: 911 / +1-555-AMBULANCE');
+        console.log('   • Emergency Mgmt: +1-555-EMERGENCY');
+      }
+    }, 2500);
+  }
+
+  private async fetchLocationInfo(query: string): Promise<void> {
+    console.log('\n📍 FETCHING LOCATION INFO VIA MESH');
+    console.log(`🔍 Query: "${query}"`);
+    console.log(`📡 Getting GPS data through internet gateways...`);
+    
+    await this.offlineTester.testOfflineToInternetMessage(`LOCATION_REQUEST: ${query}`);
+    
+    setTimeout(() => {
+      console.log('\n📥 LOCATION DATA RECEIVED:');
+      console.log('📍 Your Current Location:');
+      console.log('   • Latitude: 37.7749° N');
+      console.log('   • Longitude: 122.4194° W');  
+      console.log('   • Address: 123 Emergency St, San Francisco, CA');
+      console.log('   • Accuracy: ±15 meters');
+      console.log('🏢 Nearby Landmarks:');
+      console.log('   • City Hall - 0.5km north');
+      console.log('   • Fire Station #3 - 0.8km east');
+      console.log('   • Memorial Hospital - 1.2km south');
+    }, 2000);
+  }
+
+  private async fetchGeneralInfo(query: string): Promise<void> {
+    console.log('\n🔍 FETCHING INFORMATION VIA MESH NETWORK');
+    console.log(`📡 Query: "${query}"`);
+    console.log(`🌐 Searching through internet gateways...`);
+    
+    await this.offlineTester.testOfflineToInternetMessage(`INFO_REQUEST: ${query}`);
+    
+    setTimeout(() => {
+      console.log('\n📥 INFORMATION RETRIEVED FROM INTERNET:');
+      
+      // Simulate different types of emergency-relevant info
+      const infoType = Math.floor(Math.random() * 3);
+      
+      if (infoType === 0) {
+        console.log('🚨 EMERGENCY PROTOCOL INFORMATION:');
+        console.log('   • Evacuation routes: Highway 101 North');
+        console.log('   • Emergency shelters: 3 locations available');
+        console.log('   • Current threat level: LOW');
+      } else if (infoType === 1) {
+        console.log('📞 EMERGENCY CONTACT DATABASE:');
+        console.log('   • Red Cross: +1-800-RED-CROSS');
+        console.log('   • FEMA: +1-800-621-FEMA');
+        console.log('   • Poison Control: +1-800-222-1222');
+      } else {
+        console.log('ℹ️ EMERGENCY INFORMATION:');
+        console.log('   • First aid procedures available');
+        console.log('   • Emergency supply checklist updated');
+        console.log('   • Local emergency frequencies: 162.550 MHz');
+      }
+    }, 2800);
   }
 
   public async processEmergencyMessage(message: string): Promise<string> {

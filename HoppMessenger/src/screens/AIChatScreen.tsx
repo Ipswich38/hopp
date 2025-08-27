@@ -117,31 +117,45 @@ export const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation, route })
     <View style={styles.quickActions}>
       <Chip 
         mode="outlined" 
-        onPress={() => handleSendMessage('What is my network status?')}
+        onPress={() => handleSendMessage('What is the weather?')}
         style={styles.quickChip}
       >
-        📡 Network Status
+        🌤️ Weather
       </Chip>
       <Chip 
         mode="outlined" 
-        onPress={() => handleSendMessage('test offline mesh networking')}
-        style={[styles.quickChip, styles.testChip]}
+        onPress={() => handleSendMessage('Find nearest hospital')}
+        style={styles.quickChip}
       >
-        🧪 Test Offline
+        🏥 Hospitals
       </Chip>
       <Chip 
         mode="outlined" 
-        onPress={() => handleSendMessage('emergency help needed')}
+        onPress={() => handleSendMessage('Where am I?')}
+        style={styles.quickChip}
+      >
+        📍 Location
+      </Chip>
+      <Chip 
+        mode="outlined" 
+        onPress={() => handleSendMessage('Emergency services')}
         style={styles.quickChip}
       >
         🚨 Emergency
       </Chip>
       <Chip 
         mode="outlined" 
-        onPress={() => handleSendMessage('help')}
+        onPress={() => handleSendMessage('What is my network status?')}
         style={styles.quickChip}
       >
-        ❓ Help
+        📡 Status
+      </Chip>
+      <Chip 
+        mode="outlined" 
+        onPress={() => handleSendMessage('test offline mesh networking')}
+        style={[styles.quickChip, styles.testChip]}
+      >
+        🧪 Test
       </Chip>
     </View>
   );
