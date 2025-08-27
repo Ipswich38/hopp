@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Chip, ProgressBar, useTheme } from 'react-native-paper';
-import { MeshNetworkManager } from '../services/MeshNetworkManager';
-
 interface MeshStatusBarProps {
-  meshManager: MeshNetworkManager;
+  meshManager: any;
 }
 
 export const MeshStatusBar: React.FC<MeshStatusBarProps> = ({ meshManager }) => {

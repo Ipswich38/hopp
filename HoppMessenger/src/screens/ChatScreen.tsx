@@ -5,7 +5,7 @@ import { MessageBubble } from '../components/MessageBubble';
 import { MessageInput } from '../components/MessageInput';
 import { MeshStatusBar } from '../components/MeshStatusBar';
 import { Message, Chat } from '../types/chat';
-import { useMeshNetwork } from '../hooks/useMeshNetwork';
+import { useMeshNetwork } from '../hooks/useMeshNetwork.simple';
 
 interface ChatScreenProps {
   navigation: any;

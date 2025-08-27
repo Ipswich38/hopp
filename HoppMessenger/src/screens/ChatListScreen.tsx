@@ -4,13 +4,22 @@ import { Appbar, FAB, Button } from 'react-native-paper';
 import { ChatList } from '../components/ChatList';
 import { MeshStatusBar } from '../components/MeshStatusBar';
 import { Chat } from '../types/chat';
-import { useMeshNetwork } from '../hooks/useMeshNetwork';
+import { useMeshNetwork } from '../hooks/useMeshNetwork.simple';
 
 interface ChatListScreenProps {
   navigation: any;
 }
 
 const mockChats: Chat[] = [
+  {
+    id: 'ai-assistant',
+    name: '🤖 AI Emergency Assistant',
+    lastMessage: 'How can I help with emergency communications?',
+    timestamp: new Date(Date.now() - 1 * 60 * 1000),
+    unreadCount: 1,
+    isOnline: true,
+    isGroup: false,
+  },
   {
     id: '1',
     name: 'Emergency Team Alpha',
@@ -53,7 +62,24 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) =>
   const { meshManager, becomeRelayBot, status } = useMeshNetwork();
   
   const handleChatPress = (chat: Chat) => {
-    navigation.navigate('Chat', { chat });
+    if (chat.id === 'ai-assistant') {
+      navigation.navigate('AIChat', { chat });
+    } else {
+      navigation.navigate('Chat', { chat });
+    }
+  };
+
+  const createNewAIChat = () => {
+    const aiChat: Chat = {
+      id: 'ai-assistant-new',
+      name: '🤖 AI Emergency Assistant',
+      lastMessage: 'New conversation started',
+      timestamp: new Date(),
+      unreadCount: 0,
+      isOnline: true,
+      isGroup: false,
+    };
+    navigation.navigate('AIChat', { chat: aiChat });
   };
 
   return (
@@ -73,9 +99,10 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) =>
       <ChatList chats={mockChats} onChatPress={handleChatPress} />
       
       <FAB
-        icon="message-plus"
+        icon="robot"
+        label="AI Assistant"
         style={styles.fab}
-        onPress={() => console.log('New chat')}
+        onPress={createNewAIChat}
       />
     </View>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { MeshNetworkManager } from '../services/MeshNetworkManager';
+import { SimpleMeshNetworkManager as MeshNetworkManager } from '../services/MeshNetworkManager.simple';
 
 export const useMeshNetwork = () => {
   const meshManager = useRef<MeshNetworkManager | null>(null);
