@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Appbar, FAB } from 'react-native-paper';
+import { Appbar, FAB, Button } from 'react-native-paper';
 import { ChatList } from '../components/ChatList';
+import { MeshStatusBar } from '../components/MeshStatusBar';
 import { Chat } from '../types/chat';
+import { useMeshNetwork } from '../hooks/useMeshNetwork';
 
 interface ChatListScreenProps {
   navigation: any;
@@ -48,6 +50,8 @@ const mockChats: Chat[] = [
 ];
 
 export const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) => {
+  const { meshManager, becomeRelayBot, status } = useMeshNetwork();
+  
   const handleChatPress = (chat: Chat) => {
     navigation.navigate('Chat', { chat });
   };
@@ -56,9 +60,15 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({ navigation }) =>
     <View style={styles.container}>
       <Appbar.Header>
         <Appbar.Content title="Hopp Messenger" />
+        <Appbar.Action 
+          icon="robot" 
+          onPress={() => becomeRelayBot()} 
+        />
         <Appbar.Action icon="magnify" onPress={() => console.log('Search')} />
         <Appbar.Action icon="dots-vertical" onPress={() => console.log('Menu')} />
       </Appbar.Header>
+      
+      {meshManager && <MeshStatusBar meshManager={meshManager} />}
       
       <ChatList chats={mockChats} onChatPress={handleChatPress} />
       

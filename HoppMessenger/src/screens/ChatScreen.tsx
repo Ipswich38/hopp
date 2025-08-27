@@ -3,7 +3,9 @@ import { View, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'reac
 import { Appbar, Text } from 'react-native-paper';
 import { MessageBubble } from '../components/MessageBubble';
 import { MessageInput } from '../components/MessageInput';
+import { MeshStatusBar } from '../components/MeshStatusBar';
 import { Message, Chat } from '../types/chat';
+import { useMeshNetwork } from '../hooks/useMeshNetwork';
 
 interface ChatScreenProps {
   navigation: any;
@@ -60,8 +62,9 @@ const generateMockMessages = (chatId: string): Message[] => [
 export const ChatScreen: React.FC<ChatScreenProps> = ({ navigation, route }) => {
   const { chat } = route.params;
   const [messages, setMessages] = useState<Message[]>(generateMockMessages(chat.id));
+  const { meshManager, sendMeshMessage, status } = useMeshNetwork();
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     const newMessage: Message = {
       id: Date.now().toString(),
       text,
@@ -75,15 +78,37 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ navigation, route }) => 
 
     setMessages(prev => [...prev, newMessage]);
     
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(msg => 
-          msg.id === newMessage.id 
-            ? { ...msg, status: 'delivered' as const }
-            : msg
-        )
-      );
-    }, 1000);
+    // Send via AI Mesh Network
+    try {
+      const priority = text.toLowerCase().includes('emergency') || text.toLowerCase().includes('help') ? 'emergency' : 'normal';
+      const requiresInternet = text.toLowerCase().includes('internet') || text.toLowerCase().includes('send to');
+      
+      await sendMeshMessage(text, chat.id, priority, requiresInternet);
+      console.log(`🚀 Message sent via AI mesh: "${text}"`);
+      
+      // Update message status after mesh processing
+      setTimeout(() => {
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === newMessage.id 
+              ? { ...msg, status: status.internetGateways > 0 ? 'delivered' : 'sent' as const }
+              : msg
+          )
+        );
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Mesh send failed:', error);
+      setTimeout(() => {
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === newMessage.id 
+              ? { ...msg, status: 'sent' as const }
+              : msg
+          )
+        );
+      }, 1000);
+    }
   };
 
   return (
@@ -104,6 +129,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({ navigation, route }) => 
         <Appbar.Action icon="video" onPress={() => console.log('Video call')} />
         <Appbar.Action icon="dots-vertical" onPress={() => console.log('Menu')} />
       </Appbar.Header>
+
+      {meshManager && <MeshStatusBar meshManager={meshManager} />}
 
       <FlatList
         data={messages}
