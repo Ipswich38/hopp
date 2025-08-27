@@ -124,6 +124,13 @@ export const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation, route })
       </Chip>
       <Chip 
         mode="outlined" 
+        onPress={() => handleSendMessage('test offline mesh networking')}
+        style={[styles.quickChip, styles.testChip]}
+      >
+        🧪 Test Offline
+      </Chip>
+      <Chip 
+        mode="outlined" 
         onPress={() => handleSendMessage('emergency help needed')}
         style={styles.quickChip}
       >
@@ -193,5 +200,8 @@ const styles = StyleSheet.create({
   quickChip: {
     marginRight: 8,
     marginBottom: 4,
+  },
+  testChip: {
+    borderColor: '#FF6B35',
   },
 });

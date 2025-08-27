@@ -1,4 +1,7 @@
+import { OfflineMeshTester } from './OfflineMeshTester';
+
 export class AIChatBot {
+  private offlineTester: OfflineMeshTester;
   private knowledge: { [key: string]: string[] } = {
     greeting: [
       "Hello! I'm your AI assistant for emergency communications and mesh networking.",
@@ -29,12 +32,26 @@ export class AIChatBot {
       "I recommend becoming a relay bot to help other users in your area. This will improve overall network resilience.",
       "Network optimization complete. Routes updated with 15% better efficiency."
     ],
+    test: [
+      "🧪 Running offline mesh test...",
+      "Testing message hopping from your device to internet gateway...",
+      "Simulating offline mesh networking scenario..."
+    ],
+    offline: [
+      "I can see you're offline. Let me test message hopping through nearby devices.",
+      "Your WiFi is off but Bluetooth is on. I'll find devices that can reach the internet for you.",
+      "Testing offline → internet message routing via mesh network..."
+    ],
     unknown: [
-      "I'm not sure I understand. Try asking about 'emergency', 'status', 'help', or 'mesh network'.",
+      "I'm not sure I understand. Try asking about 'emergency', 'status', 'help', 'test offline', or 'mesh network'.",
       "Could you rephrase that? I specialize in emergency communications and mesh networking.",
       "I didn't catch that. Type 'help' to see what I can assist you with."
     ]
   };
+
+  constructor() {
+    this.offlineTester = new OfflineMeshTester();
+  }
 
   public async generateResponse(
     userMessage: string, 
@@ -60,6 +77,10 @@ export class AIChatBot {
       category = 'optimize';
     } else if (this.containsWords(message, ['help', 'what can', 'commands', 'options'])) {
       category = 'help';
+    } else if (this.containsWords(message, ['test', 'offline', 'demo', 'try'])) {
+      category = 'test';
+      // Trigger actual offline test
+      setTimeout(() => this.runOfflineTest(message), 100);
     }
 
     // Get random response from category
@@ -108,8 +129,20 @@ export class AIChatBot {
            "• 🚨 Emergency protocols\n" +
            "• 📡 Mesh network status\n" +
            "• 🤖 AI routing optimization\n" +
+           "• 🧪 Offline mesh testing\n" +
            "• 📞 Emergency contacts\n\n" +
+           "Try typing 'test offline' to see mesh networking in action!\n" +
            "Just ask me anything about emergency communications or type 'help' for more options!";
+  }
+
+  private async runOfflineTest(originalMessage: string): Promise<void> {
+    console.log('\n🔥 STARTING OFFLINE MESH TEST FROM AI BOT');
+    
+    if (originalMessage.toLowerCase().includes('emergency')) {
+      await this.offlineTester.testEmergencyBroadcast(originalMessage);
+    } else {
+      await this.offlineTester.testOfflineToInternetMessage(originalMessage);
+    }
   }
 
   public async processEmergencyMessage(message: string): Promise<string> {
